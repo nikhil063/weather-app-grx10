@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import FutureCard from "./components/FutureCards";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 import Loader from "./components/Loader";
+import { debounce } from "lodash"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -25,9 +26,18 @@ const WeatherApp = () => {
     });
   }, []);
 
+  const fetchHourlyForecastDebounced = useCallback(
+    debounce((query) => {
+      fetchHourlyForecast(query);
+    }, 500),
+    []
+  );
+  
   useEffect(() => {
-    fetchHourlyForecast(query)
-  }, [query])
+    if (query) {
+      fetchHourlyForecastDebounced(query);
+    }
+  }, [query, fetchHourlyForecastDebounced]);
 
 
   const fetchWeatherByCoords = async (lat, lon) => {
@@ -63,12 +73,31 @@ const WeatherApp = () => {
     setLoading(false);
   };
 
-  const fetchCitySuggestions = async (search) => {
-    if (!search) return setSuggestions([]);
-    const { data } = await axios.get(
-      `https://api.openweathermap.org/geo/1.0/direct?q=${search}&limit=5&appid=${API_KEY}`
-    );
-    setSuggestions(data.map((city) => city.name));
+  const debouncedFetchCitySuggestions = useCallback(
+    debounce((search, setSuggestions) => {
+      if (!search) {
+        setSuggestions([]);
+        return;
+      }
+  
+      axios
+        .get(
+          `https://api.openweathermap.org/geo/1.0/direct?q=${search}&limit=5&appid=${API_KEY}`
+        )
+        .then(({ data }) => {
+          setSuggestions(data.map((city) => city.name));
+        })
+        .catch(() => {
+          setSuggestions([]);
+        });
+    }, 500), 
+    []
+  );
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    debouncedFetchCitySuggestions(value, setSuggestions);
   };
 
   const fetchHourlyForecast = async (city) => {
@@ -171,9 +200,12 @@ const WeatherApp = () => {
           type="text"
           placeholder="Search or Enter City Name"
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            fetchCitySuggestions(e.target.value);
+          onChange={handleSearchChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && query.trim()) {
+              fetchWeatherByCity(query);
+              setSuggestions([]);
+            }
           }}
           className="w-full px-10 py-6 pl-12 bg-[#FBFBFB] text-black placeholder-gray-400 rounded-lg shadow-2xs focus:outline-none"
         />
@@ -241,9 +273,6 @@ const WeatherApp = () => {
                   <p className="text-sm text-black font-medium">{weather.wind.speed}kmph</p>
                 </div>
               </div>
-
-
-
             </div>
           </div>
 
