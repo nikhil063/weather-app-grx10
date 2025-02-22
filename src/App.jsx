@@ -257,18 +257,18 @@ const WeatherApp = () => {
 
               <div className="flex flex-col justrify-between w-full">
                 <div className="flex justify-between">
-                  <div className="flex items-center"><img src="/src/assets/temp.svg" alt="Real Feel Icon" className="w-4 h-4 mr-2 mt-1.5" /><p className="text-sm text-left">Real Feel</p></div>
+                  <div className="flex items-center"><img src="/temp.svg" alt="Real Feel Icon" className="w-4 h-4 mr-2 mt-1.5" /><p className="text-sm text-left">Real Feel</p></div>
                   <p className="text-sm text-black font-medium">{Math.floor(weather.main.feels_like)}°C</p>
                 </div>
 
                 <div className="flex justify-between">
 
-                  <div className="flex"><img src="/src/assets/temp.svg" alt="Real Feel Icon" className="w-4 h-4 mr-2 mt-1.5" /><p className="text-sm text-left">Humidity</p></div>
+                  <div className="flex"><img src="/temp.svg" alt="Real Feel Icon" className="w-4 h-4 mr-2 mt-1.5" /><p className="text-sm text-left">Humidity</p></div>
                   <p className="text-sm text-black font-medium">{weather.main.humidity}%</p>
                 </div>
 
                 <div className="flex justify-between">
-                  <div className="flex"><img src="/src/assets/temp.svg" alt="Real Feel Icon" className="w-4 h-4 mr-2 mt-1.5" /><p className="text-sm text-left">Wind</p></div>
+                  <div className="flex"><img src="/temp.svg" alt="Real Feel Icon" className="w-4 h-4 mr-2 mt-1.5" /><p className="text-sm text-left">Wind</p></div>
                   <p className="text-sm text-black font-medium">{weather.wind.speed}kmph</p>
                 </div>
               </div>
