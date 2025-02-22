@@ -31,3 +31,5 @@ npm run dev # if you are using npm
 ```
 
 The app should now be running at http://localhost:5173/
+
+Live Demo: [Here](https://weather-app-grx10.vercel.app/)
