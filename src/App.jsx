@@ -47,8 +47,7 @@ const WeatherApp = () => {
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
       );
       setWeather(data);
-      console.log(data)
-      setQuery(data.name);
+      fetchHourlyForecast(data.name)
       setError("");
     } catch (err) {
       setWeather(null)
@@ -325,7 +324,6 @@ const WeatherApp = () => {
             </div>
           </div>
 
-          {/* Placeholder for graph */}
           {hourlyForecast?.length > 0 && <HourlyWeatherChart hourlyData={hourlyForecast} />}
           <p className="flex justify-center text-center text-[#858585] text-sm font-medium mt-2">24-Hour Forecast</p>
         </div>
@@ -340,7 +338,7 @@ const WeatherApp = () => {
               <FutureCard
                 key={index}
                 condition={day.condition}
-                temperature={`${(day.maxTemp + day.minTemp) / 2}°C`} // Show High/Low temp
+                temperature={`${(day.maxTemp + day.minTemp) / 2}`} // Show High/Low temp
                 day={day.day}
                 iconUrl={day.iconUrl}
                 className="w-full sm:w-[30%] md:w-[24%]"
